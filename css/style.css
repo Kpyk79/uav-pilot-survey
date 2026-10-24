@@ -21,6 +21,7 @@
 }
 
 *{box-sizing:border-box;}
+[hidden]{display:none !important;}
 html,body{height:100%;}
 body{
   margin:0;
@@ -67,7 +68,16 @@ h1,h2,h3{font-family:'Teko',Impact,sans-serif; font-weight:600; letter-spacing:.
 .brand__text{display:flex; flex-direction:column; min-width:0;}
 .brand__title{font-family:'Teko'; font-size:19px; letter-spacing:.06em; line-height:1.1; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .brand__subtitle{font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-dim);}
-.topbar__status{font-size:12px; letter-spacing:.08em; color:var(--ink-dim); font-variant-numeric:tabular-nums; white-space:nowrap;}
+.topbar__status{font-size:12px; letter-spacing:.08em; color:var(--ink-dim); font-variant-numeric:tabular-nums; white-space:nowrap; flex:none;}
+
+@media (max-width:480px){
+  .topbar__inner{padding-top:10px; padding-bottom:10px; gap:10px;}
+  .brand{gap:8px;}
+  .brand__mark{width:24px; height:24px;}
+  .brand__title{font-size:14px; letter-spacing:.03em;}
+  .brand__subtitle{font-size:9px;}
+  .topbar__status{font-size:11px;}
+}
 
 /* ---------- stage ---------- */
 .screen{
