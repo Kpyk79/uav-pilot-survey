@@ -5,6 +5,13 @@
 зберігаються в Supabase. Прихована сторінка з результатами доступна лише після
 входу в обліковий запис, який ви самі створите в Supabase Auth.
 
+## Живий сайт
+
+- Анкета: https://kpyk79.github.io/uav-pilot-survey/
+- Результати (штаб): https://kpyk79.github.io/uav-pilot-survey/panel-9f2e7c.html
+  (вхід — email drozdairdrop@gmail.com, пароль видано окремо в чаті при налаштуванні)
+- Supabase-проєкт: uav-pilot-survey (org Kpyk79's Org, регіон eu-west-1)
+
 ## Структура
 
 ```
