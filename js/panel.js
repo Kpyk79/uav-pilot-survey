@@ -11,7 +11,7 @@
   var logoutBtn = document.getElementById("logoutBtn");
   var loginForm = document.getElementById("loginForm");
   var loginError = document.getElementById("loginError");
-  var listEl = document.getElementById("list");
+  var groupsEl = document.getElementById("groups");
   var statsEl = document.getElementById("stats");
 
   var rows = [];
@@ -21,69 +21,17 @@
   var AVAILABILITY = { full: "Повна готовність", partial: "Часткова", limited: "Обмежена" };
   var VISION = { normal: "Норма", corrected: "З корекцією", impaired: "Обмеження" };
 
-  function fmtDate(iso) {
-    if (!iso) return "—";
+  function dateKey(iso) {
     var d = new Date(iso);
-    return d.toLocaleString("uk-UA", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
+    return d.toISOString().slice(0, 10); // YYYY-MM-DD, групування за днем подання
   }
-
-  function render() {
-    var q = document.getElementById("search").value.trim().toLowerCase();
-    var sortBy = document.getElementById("sortBy").value;
-
-    var withScore = rows.map(function (r) {
-      return { row: r, ch: window.buildCharacteristic(r) };
-    });
-
-    var filtered = withScore.filter(function (x) {
-      if (!q) return true;
-      var hay = [x.row.full_name, x.row.region, x.row.phone, x.row.email].join(" ").toLowerCase();
-      return hay.includes(q);
-    });
-
-    filtered.sort(function (a, b) {
-      switch (sortBy) {
-        case "created_at_asc": return new Date(a.row.created_at) - new Date(b.row.created_at);
-        case "score_desc": return b.ch.score - a.ch.score;
-        case "name_asc": return (a.row.full_name || "").localeCompare(b.row.full_name || "", "uk");
-        default: return new Date(b.row.created_at) - new Date(a.row.created_at);
-      }
-    });
-
-    statsEl.innerHTML =
-      stat(rows.length, "Усього анкет") +
-      stat(rows.filter(function (r) { return window.buildCharacteristic(r).score >= 70; }).length, "Високий потенціал") +
-      stat(rows.filter(function (r) { return r.residence_type === "needs_housing"; }).length, "Потребують житла");
-
-    if (!filtered.length) {
-      listEl.innerHTML = '<div class="empty">Анкет не знайдено.</div>';
-      return;
-    }
-
-    listEl.innerHTML = filtered.map(function (x) {
-      var r = x.row, ch = x.ch;
-      var scoreClass = ch.score >= 70 ? "is-high" : ch.score < 40 ? "is-low" : "";
-      return (
-        '<article class="card" data-id="' + r.id + '">' +
-          '<div class="card__score ' + scoreClass + '">' + ch.score + "</div>" +
-          '<div class="card__main">' +
-            "<h3>" + escapeHtml(r.full_name || "Без імені") + "</h3>" +
-            '<div class="card__meta">' + fmtDate(r.created_at) + " · " + escapeHtml(r.phone || "") + " · " + escapeHtml(r.region || "") + "</div>" +
-            '<div class="card__tags">' + ch.tags.map(function (t) { return '<span class="tag">' + escapeHtml(t) + "</span>"; }).join("") + "</div>" +
-            '<div class="card__detail">' + detailHtml(r) + "</div>" +
-          "</div>" +
-          '<button type="button" class="btn btn--ghost card__toggle">Деталі</button>' +
-        "</article>"
-      );
-    }).join("");
-
-    Array.prototype.forEach.call(listEl.querySelectorAll(".card__toggle"), function (btn) {
-      btn.addEventListener("click", function () { btn.closest(".card").classList.toggle("is-open"); });
-    });
+  function fmtDateHeading(key) {
+    var d = new Date(key + "T00:00:00");
+    return d.toLocaleDateString("uk-UA", { day: "2-digit", month: "long", year: "numeric" });
   }
-
-  function stat(value, label) {
-    return '<div class="stat"><span class="stat__value">' + value + '</span><span class="stat__label">' + label + "</span></div>";
+  function fmtTime(iso) {
+    var d = new Date(iso);
+    return d.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" });
   }
 
   function escapeHtml(s) {
@@ -92,11 +40,95 @@
     });
   }
 
+  function groupByDate(list) {
+    var map = {};
+    list.forEach(function (r) {
+      var k = dateKey(r.created_at);
+      (map[k] = map[k] || []).push(r);
+    });
+    return Object.keys(map).sort(function (a, b) { return b.localeCompare(a); }).map(function (k) {
+      return { key: k, items: map[k] };
+    });
+  }
+
+  function render() {
+    var q = document.getElementById("search").value.trim().toLowerCase();
+    var sortBy = document.getElementById("sortBy").value;
+
+    var withScore = rows.map(function (r) { return { row: r, ch: window.buildCharacteristic(r) }; });
+
+    var filtered = withScore.filter(function (x) {
+      if (!q) return true;
+      var hay = [x.row.full_name, x.row.region, x.row.phone, x.row.email].join(" ").toLowerCase();
+      return hay.includes(q);
+    });
+
+    var sorter = {
+      created_at_asc: function (a, b) { return new Date(a.row.created_at) - new Date(b.row.created_at); },
+      score_desc: function (a, b) { return b.ch.score - a.ch.score; },
+      name_asc: function (a, b) { return (a.row.full_name || "").localeCompare(b.row.full_name || "", "uk"); },
+      created_at_desc: function (a, b) { return new Date(b.row.created_at) - new Date(a.row.created_at); },
+    }[sortBy] || function (a, b) { return new Date(b.row.created_at) - new Date(a.row.created_at); };
+
+    statsEl.innerHTML =
+      stat(rows.length, "Усього анкет") +
+      stat(rows.filter(function (r) { return window.buildCharacteristic(r).score >= 70; }).length, "Високий потенціал") +
+      stat(rows.filter(function (r) { return r.residence_type === "needs_housing"; }).length, "Потребують житла");
+
+    if (!filtered.length) {
+      groupsEl.innerHTML = '<div class="empty">Анкет не знайдено.</div>';
+      return;
+    }
+
+    var groups = groupByDate(filtered.map(function (x) { return x.row; }));
+
+    groupsEl.innerHTML = groups.map(function (g) {
+      var items = g.items.slice().sort(function (a, b) {
+        return sorter({ row: a, ch: window.buildCharacteristic(a) }, { row: b, ch: window.buildCharacteristic(b) });
+      });
+      return (
+        '<section class="group">' +
+          '<div class="group__head"><span class="group__date">' + fmtDateHeading(g.key) + '</span>' +
+            '<span class="group__count">' + items.length + " анкет" + (items.length === 1 ? "а" : items.length < 5 ? "и" : "") + "</span></div>" +
+          '<div class="group__list">' +
+            items.map(rowHtml).join("") +
+          "</div>" +
+        "</section>"
+      );
+    }).join("");
+
+    Array.prototype.forEach.call(groupsEl.querySelectorAll(".row"), function (btn) {
+      btn.addEventListener("click", function () {
+        var r = rows.find(function (x) { return String(x.id) === btn.dataset.id; });
+        if (r) openModal(r);
+      });
+    });
+  }
+
+  function rowHtml(r) {
+    var ch = window.buildCharacteristic(r);
+    var scoreClass = ch.score >= 70 ? "is-high" : ch.score < 40 ? "is-low" : "";
+    return (
+      '<button type="button" class="row" data-id="' + r.id + '">' +
+        '<span class="row__score ' + scoreClass + '">' + ch.score + "</span>" +
+        '<span class="row__name">' + escapeHtml(r.full_name || "Без імені") + "</span>" +
+        '<span class="row__tags">' + ch.tags.slice(0, 2).map(function (t) { return '<span class="tag">' + escapeHtml(t) + "</span>"; }).join("") + "</span>" +
+        '<span class="row__time">' + fmtTime(r.created_at) + "</span>" +
+      "</button>"
+    );
+  }
+
+  function stat(value, label) {
+    return '<div class="stat"><span class="stat__value">' + value + '</span><span class="stat__label">' + label + "</span></div>";
+  }
+
   function detailHtml(r) {
     var lines = [
       "Проживання: " + labelMap(RESIDENCE, r.residence_type) + (r.residence_note ? " — " + r.residence_note : ""),
+      "Телефон: " + (r.phone || "—"),
       "Email: " + (r.email || "—"),
       "Дата народження: " + (r.birth_date || "—"),
+      "Область: " + (r.region || "—"),
       "Статус: " + (r.status === "military" ? "Військовослужбовець" + (r.unit ? " (" + r.unit + ")" : "") : "Цивільний"),
       "Освіта: " + (r.education_level || "—") + (r.education_field ? ", " + r.education_field : ""),
       "Досвід БпЛА: " + (r.uav_experience ? "так — " + ((r.uav_types || []).join(", ") || "—") + (r.uav_hours ? " (" + r.uav_hours + ")" : "") : "ні"),
@@ -113,6 +145,36 @@
     ];
     return lines.map(escapeHtml).join("\n");
   }
+
+  // ---------- modal ----------
+  var modal = document.getElementById("modal");
+  var modalScore = document.getElementById("modalScore");
+  var modalName = document.getElementById("modalName");
+  var modalMeta = document.getElementById("modalMeta");
+  var modalTags = document.getElementById("modalTags");
+  var modalDetail = document.getElementById("modalDetail");
+  var lastFocused = null;
+
+  function openModal(r) {
+    var ch = window.buildCharacteristic(r);
+    var scoreClass = ch.score >= 70 ? "is-high" : ch.score < 40 ? "is-low" : "";
+    modalScore.textContent = ch.score;
+    modalScore.className = "modal__score " + scoreClass;
+    modalName.textContent = r.full_name || "Без імені";
+    modalMeta.textContent = fmtDateHeading(dateKey(r.created_at)) + " · " + fmtTime(r.created_at) + " · " + ch.level;
+    modalTags.innerHTML = ch.tags.map(function (t) { return '<span class="tag">' + escapeHtml(t) + "</span>"; }).join("");
+    modalDetail.textContent = detailHtml(r);
+    lastFocused = document.activeElement;
+    modal.hidden = false;
+    document.getElementById("modalClose").focus();
+  }
+  function closeModal() {
+    modal.hidden = true;
+    if (lastFocused) lastFocused.focus();
+  }
+  document.getElementById("modalClose").addEventListener("click", closeModal);
+  document.getElementById("modalBackdrop").addEventListener("click", closeModal);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !modal.hidden) closeModal(); });
 
   async function loadRows() {
     if (!client) return;
