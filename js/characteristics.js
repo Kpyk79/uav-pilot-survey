@@ -34,13 +34,6 @@ window.buildCharacteristic = function (c) {
   if (c.vision === "impaired") tags.push("Обмеження зору");
   if (c.health_limitations && c.health_limitations.trim()) tags.push("Є зауваження щодо здоров'я");
 
-  // Проживання
-  if (c.residence_type === "needs_housing") tags.push("Потребує забезпечення житлом");
-
-  // Готовність
-  if (c.availability === "full") score += 10;
-  if (c.availability === "limited") tags.push("Обмежена готовність за часом");
-
   score = Math.max(0, Math.min(100, Math.round(score)));
 
   var level = score >= 70 ? "Високий потенціал" : score >= 40 ? "Середній потенціал" : "Потребує додаткової оцінки";

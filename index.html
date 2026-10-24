@@ -7,7 +7,7 @@
 <meta name="description" content="Онлайн-анкета попереднього відбору кандидатів на підготовку пілотів безпілотних авіаційних комплексів." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -81,18 +81,7 @@
 
       <label class="field">
         <span class="field__label">Де проживатиме курсант на час проведення зборів? <i>*</i></span>
-        <select class="field__input" name="residence_type" required>
-          <option value="" disabled selected>Оберіть варіант</option>
-          <option value="own">За місцем постійного проживання (поруч із пунктом зборів)</option>
-          <option value="needs_housing">Потребую забезпечення житлом (казарма / гуртожиток)</option>
-          <option value="rent">Орендую житло самостійно поблизу</option>
-          <option value="other">Інше (уточню нижче)</option>
-        </select>
-      </label>
-
-      <label class="field" data-show-if="residence_type=other">
-        <span class="field__label">Уточніть варіант проживання</span>
-        <input class="field__input" type="text" name="residence_note" maxlength="300">
+        <input class="field__input" type="text" name="residence_type" required maxlength="300" placeholder="Вкажіть повну адресу">
       </label>
 
       <div class="row2">
@@ -209,6 +198,8 @@
     <fieldset class="step" data-step="4" data-title="Технічні навички">
       <legend class="step__legend"><span class="step__num">04</span>Технічні навички</legend>
 
+      <p class="step__hint">Оцініть власний рівень за кожним напрямом самостійно за шкалою: 0 — немає навичок, 1 — базовий рівень, 2 — середній рівень, 3 — високий рівень.</p>
+
       <div class="skill" data-skill="skill_electronics">
         <span class="field__label">Електроніка / радіотехніка</span>
         <div class="skill__scale" role="radiogroup">
@@ -283,35 +274,15 @@
         </div>
         <input type="hidden" name="stress_resilience" value="0">
       </div>
-
-      <label class="field">
-        <span class="field__label">Короткий приклад ситуації, де довелось діяти під тиском</span>
-        <textarea class="field__input" name="stress_example" rows="3" maxlength="600"></textarea>
-      </label>
     </fieldset>
 
     <!-- STEP 6 -->
-    <fieldset class="step" data-step="6" data-title="Мотивація та готовність">
-      <legend class="step__legend"><span class="step__num">06</span>Мотивація та готовність</legend>
+    <fieldset class="step" data-step="6" data-title="Мотивація">
+      <legend class="step__legend"><span class="step__num">06</span>Мотивація</legend>
 
       <label class="field">
         <span class="field__label">Чому ви хочете стати пілотом БпЛА? <i>*</i></span>
         <textarea class="field__input" name="motivation" rows="3" maxlength="800" required></textarea>
-      </label>
-
-      <label class="field">
-        <span class="field__label">Готовність до участі у зборах</span>
-        <select class="field__input" name="availability">
-          <option value="" disabled selected>Оберіть варіант</option>
-          <option value="full">Повна, без обмежень за часом</option>
-          <option value="partial">Часткова, є окремі обмеження</option>
-          <option value="limited">Обмежена, потрібне узгодження дат</option>
-        </select>
-      </label>
-
-      <label class="field">
-        <span class="field__label">Уточнення щодо готовності (дати, обмеження)</span>
-        <input class="field__input" type="text" name="availability_note" maxlength="300">
       </label>
 
       <label class="field">

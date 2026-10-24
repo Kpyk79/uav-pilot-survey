@@ -8,8 +8,7 @@ create table if not exists public.candidates (
   created_at timestamptz not null default now(),
 
   -- Блок 1. Проживання та контакти
-  residence_type text not null,            -- 'own' | 'needs_housing' | 'rent' | 'other'
-  residence_note text,
+  residence_type text not null,            -- адреса, яку курсант вписує самостійно
   full_name text not null,
   birth_date date,
   phone text not null,
@@ -41,12 +40,9 @@ create table if not exists public.candidates (
   vision text,                              -- 'normal' | 'corrected' | 'impaired'
   health_limitations text,
   stress_resilience int,                    -- 1-5
-  stress_example text,
 
-  -- Блок 6. Мотивація та готовність
+  -- Блок 6. Мотивація
   motivation text,
-  availability text,                        -- 'full' | 'partial' | 'limited'
-  availability_note text,
   contact_person text,
   additional_info text,
 

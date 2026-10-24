@@ -17,8 +17,6 @@
   var rows = [];
 
   function labelMap(dict, key) { return dict[key] || key || "—"; }
-  var RESIDENCE = { own: "За місцем проживання", needs_housing: "Потребує житла", rent: "Оренда поблизу", other: "Інше" };
-  var AVAILABILITY = { full: "Повна готовність", partial: "Часткова", limited: "Обмежена" };
   var VISION = { normal: "Норма", corrected: "З корекцією", impaired: "Обмеження" };
 
   function dateKey(iso) {
@@ -73,7 +71,7 @@
     statsEl.innerHTML =
       stat(rows.length, "Усього анкет") +
       stat(rows.filter(function (r) { return window.buildCharacteristic(r).score >= 70; }).length, "Високий потенціал") +
-      stat(rows.filter(function (r) { return r.residence_type === "needs_housing"; }).length, "Потребують житла");
+      stat(rows.filter(function (r) { return r.uav_experience; }).length, "З досвідом БпЛА");
 
     if (!filtered.length) {
       groupsEl.innerHTML = '<div class="empty">Анкет не знайдено.</div>';
@@ -82,18 +80,18 @@
 
     var groups = groupByDate(filtered.map(function (x) { return x.row; }));
 
-    groupsEl.innerHTML = groups.map(function (g) {
+    groupsEl.innerHTML = groups.map(function (g, i) {
       var items = g.items.slice().sort(function (a, b) {
         return sorter({ row: a, ch: window.buildCharacteristic(a) }, { row: b, ch: window.buildCharacteristic(b) });
       });
       return (
-        '<section class="group">' +
-          '<div class="group__head"><span class="group__date">' + fmtDateHeading(g.key) + '</span>' +
-            '<span class="group__count">' + items.length + " анкет" + (items.length === 1 ? "а" : items.length < 5 ? "и" : "") + "</span></div>" +
+        '<details class="group"' + (i === 0 ? " open" : "") + '>' +
+          '<summary class="group__head"><span class="group__date">' + fmtDateHeading(g.key) + '</span>' +
+            '<span class="group__count">' + items.length + " анкет" + (items.length === 1 ? "а" : items.length < 5 ? "и" : "") + "</span></summary>" +
           '<div class="group__list">' +
             items.map(rowHtml).join("") +
           "</div>" +
-        "</section>"
+        "</details>"
       );
     }).join("");
 
@@ -124,7 +122,7 @@
 
   function detailHtml(r) {
     var lines = [
-      "Проживання: " + labelMap(RESIDENCE, r.residence_type) + (r.residence_note ? " — " + r.residence_note : ""),
+      "Адреса проживання на час зборів: " + (r.residence_type || "—"),
       "Телефон: " + (r.phone || "—"),
       "Email: " + (r.email || "—"),
       "Дата народження: " + (r.birth_date || "—"),
@@ -137,9 +135,8 @@
       "Навички — електроніка/програмування/ремонт: " + [r.skill_electronics, r.skill_programming, r.skill_repair].join(" / "),
       "Водійські категорії: " + ((r.driver_license || []).join(", ") || "—"),
       "Зір: " + labelMap(VISION, r.vision) + (r.health_limitations ? " — " + r.health_limitations : ""),
-      "Стресостійкість: " + (r.stress_resilience || "—") + "/5" + (r.stress_example ? " — " + r.stress_example : ""),
+      "Стресостійкість: " + (r.stress_resilience || "—") + "/5",
       "Мотивація: " + (r.motivation || "—"),
-      "Готовність: " + labelMap(AVAILABILITY, r.availability) + (r.availability_note ? " — " + r.availability_note : ""),
       "Контактна особа: " + (r.contact_person || "—"),
       "Додатково: " + (r.additional_info || "—"),
     ];
@@ -227,6 +224,7 @@
     dashboard.hidden = true;
     logoutBtn.hidden = true;
   }
+
 
   loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();

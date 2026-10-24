@@ -1,7 +1,7 @@
 /*
   Design tokens.
   Palette: charcoal/olive battlefield base, tactical amber accent, signal-green ok state.
-  Type: Teko (display, condensed military stencil feel) + Rajdhani (body/UI, technical).
+  Type: Exo 2 (display, angular technical/military feel) + Inter (body/UI, modern neutral).
   Layout: single full-bleed "ops screen" with a fixed topbar, a centered content
   stage that swaps panels (intro -> wizard steps -> done), radar/scanline motion.
 */
@@ -27,7 +27,7 @@ body{
   margin:0;
   background:var(--bg);
   color:var(--ink);
-  font-family:'Rajdhani',Arial,sans-serif;
+  font-family:'Inter',Arial,sans-serif;
   font-size:16px;
   line-height:1.5;
   padding-left:max(16px, env(safe-area-inset-left,0px));
@@ -35,7 +35,7 @@ body{
   overflow-x:hidden;
 }
 
-h1,h2,h3{font-family:'Teko',Impact,sans-serif; font-weight:600; letter-spacing:.01em; margin:0; text-wrap:balance;}
+h1,h2,h3{font-family:'Exo 2',Impact,sans-serif; font-weight:600; letter-spacing:.01em; margin:0; text-wrap:balance;}
 
 /* ---------- atmosphere ---------- */
 .noise{
@@ -66,7 +66,7 @@ h1,h2,h3{font-family:'Teko',Impact,sans-serif; font-weight:600; letter-spacing:.
 .brand{display:flex; align-items:center; gap:12px; min-width:0;}
 .brand__mark{width:30px; height:30px; color:var(--accent); flex:none;}
 .brand__text{display:flex; flex-direction:column; min-width:0;}
-.brand__title{font-family:'Teko'; font-size:19px; letter-spacing:.06em; line-height:1.1; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.brand__title{font-family:'Exo 2'; font-size:18px; letter-spacing:.06em; line-height:1.1; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .brand__subtitle{font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-dim);}
 .topbar__status{font-size:12px; letter-spacing:.08em; color:var(--ink-dim); font-variant-numeric:tabular-nums; white-space:nowrap; flex:none;}
 
@@ -99,7 +99,7 @@ h1,h2,h3{font-family:'Teko',Impact,sans-serif; font-weight:600; letter-spacing:.
 .intro__lead{color:var(--ink-dim); font-size:17px; max-width:46ch; margin:18px 0 24px;}
 .intro__facts{list-style:none; margin:0 0 32px; padding:0; display:flex; gap:28px; flex-wrap:wrap;}
 .intro__facts li{display:flex; flex-direction:column; gap:2px; font-size:12px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:.08em;}
-.intro__facts span{font-family:'Teko'; font-size:28px; color:var(--accent); letter-spacing:0; text-transform:none;}
+.intro__facts span{font-family:'Exo 2'; font-size:26px; color:var(--accent); letter-spacing:0; text-transform:none;}
 
 .intro__visual{display:flex; justify-content:center;}
 .radar{
@@ -134,7 +134,7 @@ h1,h2,h3{font-family:'Teko',Impact,sans-serif; font-weight:600; letter-spacing:.
 /* ---------- buttons ---------- */
 .btn{
   appearance:none; border:1px solid var(--line); background:var(--panel); color:var(--ink);
-  font-family:'Rajdhani'; font-weight:600; letter-spacing:.04em; text-transform:uppercase;
+  font-family:'Inter'; font-weight:600; letter-spacing:.02em; text-transform:uppercase;
   font-size:13px; padding:12px 20px; border-radius:2px; cursor:pointer;
   display:inline-flex; align-items:center; gap:8px; transition:transform .15s, border-color .15s, background .15s;
 }
@@ -162,8 +162,9 @@ h1,h2,h3{font-family:'Teko',Impact,sans-serif; font-weight:600; letter-spacing:.
 /* ---------- form ---------- */
 .step{display:none; border:0; margin:0; padding:0; animation:rise .4s ease both;}
 .step.is-active{display:block;}
-.step__legend{display:flex; align-items:baseline; gap:12px; font-family:'Teko'; font-size:30px; color:var(--ink); padding:0 0 18px; border-bottom:1px solid var(--line); margin-bottom:22px; width:100%;}
+.step__legend{display:flex; align-items:baseline; gap:12px; font-family:'Exo 2'; font-size:28px; color:var(--ink); padding:0 0 18px; border-bottom:1px solid var(--line); margin-bottom:22px; width:100%;}
 .step__num{font-size:15px; color:var(--accent); letter-spacing:.1em; border:1px solid var(--accent-dim); padding:2px 8px; border-radius:2px;}
+.step__hint{font-size:13px; color:var(--ink-dim); margin:-8px 0 20px; max-width:60ch; line-height:1.5;}
 
 .field{display:flex; flex-direction:column; gap:6px; margin-bottom:18px;}
 .field-group{display:flex; flex-direction:column; gap:8px; margin-bottom:18px;}
@@ -174,12 +175,12 @@ h1,h2,h3{font-family:'Teko',Impact,sans-serif; font-weight:600; letter-spacing:.
 
 .field__input{
   width:100%; background:var(--panel); border:1px solid var(--line); color:var(--ink);
-  font-family:'Rajdhani'; font-size:15px; padding:11px 12px; border-radius:2px;
+  font-family:'Inter'; font-size:15px; padding:11px 12px; border-radius:2px;
   transition:border-color .15s, box-shadow .15s;
 }
 .field__input::placeholder{color:var(--ink-dim);}
 .field__input:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(216,162,58,.15);}
-textarea.field__input{resize:vertical; min-height:64px; font-family:'Rajdhani';}
+textarea.field__input{resize:vertical; min-height:64px; font-family:'Inter';}
 select.field__input{appearance:none; background-image:linear-gradient(45deg, transparent 50%, var(--ink-dim) 50%), linear-gradient(135deg, var(--ink-dim) 50%, transparent 50%); background-position:calc(100% - 18px) center, calc(100% - 13px) center; background-size:5px 5px, 5px 5px; background-repeat:no-repeat;}
 
 .field--toggle{flex-direction:row; align-items:center; gap:10px; cursor:pointer;}
@@ -201,7 +202,7 @@ select.field__input{appearance:none; background-image:linear-gradient(45deg, tra
 .skill__scale{display:flex; gap:8px; margin-top:8px;}
 .skill__dot{
   width:40px; height:40px; border-radius:50%; border:1px solid var(--line); background:var(--panel);
-  color:var(--ink-dim); font-family:'Teko'; font-size:16px; cursor:pointer; transition:all .15s;
+  color:var(--ink-dim); font-family:'Exo 2'; font-size:15px; cursor:pointer; transition:all .15s;
 }
 .skill__dot:hover{border-color:var(--accent-dim);}
 .skill__dot.is-selected{background:var(--accent); color:#1b1505; border-color:var(--accent);}

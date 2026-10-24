@@ -131,7 +131,6 @@
     var fd = new FormData(form);
     var payload = {
       residence_type: fd.get("residence_type") || null,
-      residence_note: fd.get("residence_note") || null,
       full_name: fd.get("full_name") || null,
       birth_date: fd.get("birth_date") || null,
       phone: fd.get("phone") || null,
@@ -159,11 +158,8 @@
       vision: fd.get("vision") || null,
       health_limitations: fd.get("health_limitations") || null,
       stress_resilience: Number(fd.get("stress_resilience") || 0),
-      stress_example: fd.get("stress_example") || null,
 
       motivation: fd.get("motivation") || null,
-      availability: fd.get("availability") || null,
-      availability_note: fd.get("availability_note") || null,
       contact_person: fd.get("contact_person") || null,
       additional_info: fd.get("additional_info") || null,
 
