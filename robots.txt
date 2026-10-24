@@ -1,0 +1,2 @@
+User-agent: *
+Disallow: /panel-9f2e7c.html

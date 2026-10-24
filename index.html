@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Анкета відбору пілотів БпЛА</title>
+<meta name="description" content="Онлайн-анкета попереднього відбору кандидатів на підготовку пілотів безпілотних авіаційних комплексів." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="noise"></div>
+<div class="scanline"></div>
+
+<header class="topbar">
+  <div class="topbar__inner">
+    <div class="brand">
+      <svg class="brand__mark" viewBox="0 0 48 48" aria-hidden="true">
+        <polygon points="24,3 45,24 24,45 3,24" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M24 12 L24 36 M12 24 L36 24" stroke="currentColor" stroke-width="2"/>
+        <circle cx="24" cy="24" r="5" fill="currentColor"/>
+      </svg>
+      <div class="brand__text">
+        <span class="brand__title">ВІДБІР ОПЕРАТОРІВ БПЛА</span>
+        <span class="brand__subtitle">попередня анкета кандидата</span>
+      </div>
+    </div>
+    <div class="topbar__status" id="clock">— </div>
+  </div>
+</header>
+
+<main class="screen" id="screen">
+
+  <!-- ІНТРО -->
+  <section class="panel panel--intro is-active" data-panel="intro">
+    <div class="intro__grid">
+      <div class="intro__copy">
+        <p class="eyebrow">Підрозділ підготовки операторів безпілотних систем</p>
+        <h1 class="intro__title">Анкета попереднього&nbsp;відбору<br>майбутніх пілотів&nbsp;БпЛА</h1>
+        <p class="intro__lead">
+          Коротке опитування допоможе визначити вашу готовність, технічні навички
+          та потреби перед зборами. Це не тест «правильно/неправильно» —
+          чесні відповіді важливіші за ідеальні.
+        </p>
+        <ul class="intro__facts">
+          <li><span>≈ 7&nbsp;хв</span>Орієнтовний час заповнення</li>
+          <li><span>6</span>Коротких розділів</li>
+          <li><span>1</span>Відправка без реєстрації</li>
+        </ul>
+        <button class="btn btn--primary btn--lg" id="startBtn" type="button">
+          Розпочати анкетування <span class="btn__arrow">→</span>
+        </button>
+      </div>
+      <div class="intro__visual" aria-hidden="true">
+        <div class="radar">
+          <div class="radar__sweep"></div>
+          <div class="radar__ring"></div>
+          <div class="radar__ring"></div>
+          <div class="radar__ring"></div>
+          <div class="radar__blip" style="--x:62%; --y:38%; --d:0s"></div>
+          <div class="radar__blip" style="--x:30%; --y:60%; --d:1.1s"></div>
+          <div class="radar__blip" style="--x:75%; --y:70%; --d:2.3s"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ФОРМА -->
+  <form class="panel panel--form" data-panel="form" id="surveyForm" novalidate>
+
+    <div class="progress" aria-hidden="true">
+      <div class="progress__bar"><div class="progress__fill" id="progressFill"></div></div>
+      <div class="progress__steps" id="progressSteps"></div>
+    </div>
+
+    <!-- STEP 1 -->
+    <fieldset class="step is-active" data-step="1" data-title="Проживання та контакти">
+      <legend class="step__legend"><span class="step__num">01</span>Проживання та контакти</legend>
+
+      <label class="field">
+        <span class="field__label">Де проживатиме курсант на час проведення зборів? <i>*</i></span>
+        <select class="field__input" name="residence_type" required>
+          <option value="" disabled selected>Оберіть варіант</option>
+          <option value="own">За місцем постійного проживання (поруч із пунктом зборів)</option>
+          <option value="needs_housing">Потребую забезпечення житлом (казарма / гуртожиток)</option>
+          <option value="rent">Орендую житло самостійно поблизу</option>
+          <option value="other">Інше (уточню нижче)</option>
+        </select>
+      </label>
+
+      <label class="field" data-show-if="residence_type=other">
+        <span class="field__label">Уточніть варіант проживання</span>
+        <input class="field__input" type="text" name="residence_note" maxlength="300">
+      </label>
+
+      <div class="row2">
+        <label class="field">
+          <span class="field__label">Прізвище, ім'я, по батькові <i>*</i></span>
+          <input class="field__input" type="text" name="full_name" required maxlength="150" autocomplete="name">
+        </label>
+        <label class="field">
+          <span class="field__label">Дата народження</span>
+          <input class="field__input" type="date" name="birth_date">
+        </label>
+      </div>
+
+      <div class="row2">
+        <label class="field">
+          <span class="field__label">Контактний телефон <i>*</i></span>
+          <input class="field__input" type="tel" name="phone" required placeholder="+380 __ ___ __ __" autocomplete="tel">
+        </label>
+        <label class="field">
+          <span class="field__label">Email</span>
+          <input class="field__input" type="email" name="email" autocomplete="email">
+        </label>
+      </div>
+
+      <label class="field">
+        <span class="field__label">Область / населений пункт постійного проживання</span>
+        <input class="field__input" type="text" name="region" maxlength="150">
+      </label>
+    </fieldset>
+
+    <!-- STEP 2 -->
+    <fieldset class="step" data-step="2" data-title="Служба та освіта">
+      <legend class="step__legend"><span class="step__num">02</span>Служба та освіта</legend>
+
+      <label class="field">
+        <span class="field__label">Статус</span>
+        <select class="field__input" name="status">
+          <option value="" disabled selected>Оберіть варіант</option>
+          <option value="civilian">Цивільна особа</option>
+          <option value="military">Військовослужбовець</option>
+        </select>
+      </label>
+
+      <label class="field" data-show-if="status=military">
+        <span class="field__label">Військова частина / підрозділ</span>
+        <input class="field__input" type="text" name="unit" maxlength="200">
+      </label>
+
+      <div class="row2">
+        <label class="field">
+          <span class="field__label">Рівень освіти</span>
+          <select class="field__input" name="education_level">
+            <option value="" disabled selected>Оберіть варіант</option>
+            <option value="secondary">Повна загальна середня</option>
+            <option value="vocational">Професійно-технічна</option>
+            <option value="bachelor">Бакалавр</option>
+            <option value="master">Магістр / спеціаліст</option>
+            <option value="other">Інше</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">Спеціальність / напрям</span>
+          <input class="field__input" type="text" name="education_field" maxlength="200">
+        </label>
+      </div>
+    </fieldset>
+
+    <!-- STEP 3 -->
+    <fieldset class="step" data-step="3" data-title="Досвід з БпЛА та авіацією">
+      <legend class="step__legend"><span class="step__num">03</span>Досвід з БпЛА та авіацією</legend>
+
+      <label class="field field--toggle">
+        <input type="checkbox" name="uav_experience" class="toggle__input">
+        <span class="toggle__box"></span>
+        <span class="field__label">Маю досвід керування БпЛА</span>
+      </label>
+
+      <div class="field-group" data-show-if="uav_experience=on">
+        <span class="field__label">Типи апаратів, якими керували</span>
+        <div class="chips" data-chips="uav_types">
+          <label class="chip"><input type="checkbox" value="fpv"><span>FPV-дрон</span></label>
+          <label class="chip"><input type="checkbox" value="multirotor"><span>Мультикоптер (DJI тощо)</span></label>
+          <label class="chip"><input type="checkbox" value="fixed_wing"><span>Літак (крило)</span></label>
+          <label class="chip"><input type="checkbox" value="vtol"><span>VTOL</span></label>
+        </div>
+        <label class="field">
+          <span class="field__label">Орієнтовний наліт (годин) або кількість вильотів</span>
+          <input class="field__input" type="text" name="uav_hours" maxlength="120">
+        </label>
+      </div>
+
+      <label class="field field--toggle">
+        <input type="checkbox" name="rc_experience" class="toggle__input">
+        <span class="toggle__box"></span>
+        <span class="field__label">Маю досвід з RC-моделями / авіамодельним спортом</span>
+      </label>
+      <label class="field" data-show-if="rc_experience=on">
+        <span class="field__label">Деталі (тип моделей, стаж)</span>
+        <input class="field__input" type="text" name="rc_details" maxlength="300">
+      </label>
+
+      <label class="field field--toggle">
+        <input type="checkbox" name="sim_experience" class="toggle__input">
+        <span class="toggle__box"></span>
+        <span class="field__label">Маю досвід з авіасимуляторами (напр. Liftoff, Velocidrone)</span>
+      </label>
+      <label class="field" data-show-if="sim_experience=on">
+        <span class="field__label">Які симулятори / як часто</span>
+        <input class="field__input" type="text" name="sim_details" maxlength="300">
+      </label>
+    </fieldset>
+
+    <!-- STEP 4 -->
+    <fieldset class="step" data-step="4" data-title="Технічні навички">
+      <legend class="step__legend"><span class="step__num">04</span>Технічні навички</legend>
+
+      <div class="skill" data-skill="skill_electronics">
+        <span class="field__label">Електроніка / радіотехніка</span>
+        <div class="skill__scale" role="radiogroup">
+          <button type="button" class="skill__dot" data-val="0" title="Відсутній">0</button>
+          <button type="button" class="skill__dot" data-val="1" title="Базовий">1</button>
+          <button type="button" class="skill__dot" data-val="2" title="Середній">2</button>
+          <button type="button" class="skill__dot" data-val="3" title="Високий">3</button>
+        </div>
+        <input type="hidden" name="skill_electronics" value="0">
+      </div>
+
+      <div class="skill" data-skill="skill_programming">
+        <span class="field__label">Програмування / налаштування систем</span>
+        <div class="skill__scale" role="radiogroup">
+          <button type="button" class="skill__dot" data-val="0" title="Відсутній">0</button>
+          <button type="button" class="skill__dot" data-val="1" title="Базовий">1</button>
+          <button type="button" class="skill__dot" data-val="2" title="Середній">2</button>
+          <button type="button" class="skill__dot" data-val="3" title="Високий">3</button>
+        </div>
+        <input type="hidden" name="skill_programming" value="0">
+      </div>
+
+      <div class="skill" data-skill="skill_repair">
+        <span class="field__label">Ремонт / обслуговування техніки</span>
+        <div class="skill__scale" role="radiogroup">
+          <button type="button" class="skill__dot" data-val="0" title="Відсутній">0</button>
+          <button type="button" class="skill__dot" data-val="1" title="Базовий">1</button>
+          <button type="button" class="skill__dot" data-val="2" title="Середній">2</button>
+          <button type="button" class="skill__dot" data-val="3" title="Високий">3</button>
+        </div>
+        <input type="hidden" name="skill_repair" value="0">
+      </div>
+
+      <div class="field-group">
+        <span class="field__label">Категорії водійського посвідчення</span>
+        <div class="chips" data-chips="driver_license">
+          <label class="chip"><input type="checkbox" value="A"><span>A</span></label>
+          <label class="chip"><input type="checkbox" value="B"><span>B</span></label>
+          <label class="chip"><input type="checkbox" value="C"><span>C</span></label>
+          <label class="chip"><input type="checkbox" value="D"><span>D</span></label>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- STEP 5 -->
+    <fieldset class="step" data-step="5" data-title="Фізичний і психологічний стан">
+      <legend class="step__legend"><span class="step__num">05</span>Фізичний і психологічний стан</legend>
+
+      <label class="field">
+        <span class="field__label">Зір</span>
+        <select class="field__input" name="vision">
+          <option value="" disabled selected>Оберіть варіант</option>
+          <option value="normal">Нормальний, без корекції</option>
+          <option value="corrected">Знижений, з корекцією (окуляри/лінзи)</option>
+          <option value="impaired">Є суттєві обмеження</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="field__label">Обмеження за станом здоров'я (якщо є)</span>
+        <textarea class="field__input" name="health_limitations" rows="2" maxlength="500"></textarea>
+      </label>
+
+      <div class="skill" data-skill="stress_resilience">
+        <span class="field__label">Самооцінка стресостійкості</span>
+        <div class="skill__scale" role="radiogroup">
+          <button type="button" class="skill__dot" data-val="1" title="Низька">1</button>
+          <button type="button" class="skill__dot" data-val="2" title="Нижче середньої">2</button>
+          <button type="button" class="skill__dot" data-val="3" title="Середня">3</button>
+          <button type="button" class="skill__dot" data-val="4" title="Вище середньої">4</button>
+          <button type="button" class="skill__dot" data-val="5" title="Висока">5</button>
+        </div>
+        <input type="hidden" name="stress_resilience" value="0">
+      </div>
+
+      <label class="field">
+        <span class="field__label">Короткий приклад ситуації, де довелось діяти під тиском</span>
+        <textarea class="field__input" name="stress_example" rows="3" maxlength="600"></textarea>
+      </label>
+    </fieldset>
+
+    <!-- STEP 6 -->
+    <fieldset class="step" data-step="6" data-title="Мотивація та готовність">
+      <legend class="step__legend"><span class="step__num">06</span>Мотивація та готовність</legend>
+
+      <label class="field">
+        <span class="field__label">Чому ви хочете стати пілотом БпЛА? <i>*</i></span>
+        <textarea class="field__input" name="motivation" rows="3" maxlength="800" required></textarea>
+      </label>
+
+      <label class="field">
+        <span class="field__label">Готовність до участі у зборах</span>
+        <select class="field__input" name="availability">
+          <option value="" disabled selected>Оберіть варіант</option>
+          <option value="full">Повна, без обмежень за часом</option>
+          <option value="partial">Часткова, є окремі обмеження</option>
+          <option value="limited">Обмежена, потрібне узгодження дат</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="field__label">Уточнення щодо готовності (дати, обмеження)</span>
+        <input class="field__input" type="text" name="availability_note" maxlength="300">
+      </label>
+
+      <label class="field">
+        <span class="field__label">Контактна особа командування (ПІБ, телефон) — якщо застосовно</span>
+        <input class="field__input" type="text" name="contact_person" maxlength="300">
+      </label>
+
+      <label class="field">
+        <span class="field__label">Додаткова інформація</span>
+        <textarea class="field__input" name="additional_info" rows="2" maxlength="500"></textarea>
+      </label>
+
+      <label class="field field--toggle field--consent">
+        <input type="checkbox" name="consent" class="toggle__input" required>
+        <span class="toggle__box"></span>
+        <span class="field__label">Я надаю згоду на обробку персональних даних, зазначених в анкеті, з метою проведення відбору кандидатів. <i>*</i></span>
+      </label>
+    </fieldset>
+
+    <div class="step__nav">
+      <button type="button" class="btn btn--ghost" id="prevBtn">← Назад</button>
+      <button type="button" class="btn btn--primary" id="nextBtn">Далі →</button>
+      <button type="submit" class="btn btn--primary btn--submit" id="submitBtn" hidden>Відправити анкету</button>
+    </div>
+  </form>
+
+  <!-- ГОТОВО -->
+  <section class="panel panel--done" data-panel="done">
+    <div class="done__box">
+      <svg class="done__check" viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M18 33 L28 43 L46 23" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h2>Анкету прийнято</h2>
+      <p>Дякуємо за заповнення. Результати передано на розгляд. З вами зв'яжуться за вказаним номером телефону.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <span>Підготовка операторів безпілотних авіаційних комплексів</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

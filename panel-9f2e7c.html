@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Штаб — результати відбору</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/panel.css">
+</head>
+<body>
+<div class="noise"></div>
+
+<header class="topbar">
+  <div class="topbar__inner">
+    <div class="brand">
+      <svg class="brand__mark" viewBox="0 0 48 48" aria-hidden="true">
+        <polygon points="24,3 45,24 24,45 3,24" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M24 12 L24 36 M12 24 L36 24" stroke="currentColor" stroke-width="2"/>
+        <circle cx="24" cy="24" r="5" fill="currentColor"/>
+      </svg>
+      <div class="brand__text">
+        <span class="brand__title">ШТАБ ВІДБОРУ</span>
+        <span class="brand__subtitle">список кандидатів</span>
+      </div>
+    </div>
+    <button class="btn btn--ghost" id="logoutBtn" hidden>Вийти</button>
+  </div>
+</header>
+
+<main class="screen screen--panel">
+
+  <!-- LOGIN -->
+  <section class="loginbox" id="loginBox">
+    <h1>Вхід для особового складу</h1>
+    <p class="loginbox__hint">Доступ лише для авторизованих облікових записів Supabase Auth.</p>
+    <form id="loginForm">
+      <label class="field">
+        <span class="field__label">Email</span>
+        <input class="field__input" type="email" name="email" required autocomplete="username">
+      </label>
+      <label class="field">
+        <span class="field__label">Пароль</span>
+        <input class="field__input" type="password" name="password" required autocomplete="current-password">
+      </label>
+      <button class="btn btn--primary btn--lg" type="submit">Увійти</button>
+      <p class="loginbox__error" id="loginError" hidden></p>
+    </form>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section class="dashboard" id="dashboard" hidden>
+    <div class="dashboard__toolbar">
+      <input class="field__input" id="search" type="search" placeholder="Пошук за ПІБ, областю, телефоном…">
+      <select class="field__input" id="sortBy">
+        <option value="created_at_desc">Нові спочатку</option>
+        <option value="created_at_asc">Старі спочатку</option>
+        <option value="score_desc">Рейтинг (вищий спочатку)</option>
+        <option value="name_asc">За прізвищем (А→Я)</option>
+      </select>
+      <button class="btn btn--ghost" id="exportBtn">Експорт CSV</button>
+      <button class="btn btn--ghost" id="refreshBtn">Оновити</button>
+    </div>
+    <div class="dashboard__stats" id="stats"></div>
+    <div class="dashboard__list" id="list"></div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="js/config.js"></script>
+<script src="js/characteristics.js"></script>
+<script src="js/panel.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+.screen--panel{display:block; padding-top:clamp(24px,5vw,48px);}
+
+.loginbox{max-width:360px; margin:8vh auto 0; text-align:left;}
+.loginbox h1{font-size:30px; margin-bottom:6px;}
+.loginbox__hint{color:var(--ink-dim); font-size:13px; margin-bottom:22px;}
+.loginbox form{display:flex; flex-direction:column; gap:16px;}
+.loginbox__error{color:var(--danger); font-size:13px; margin:0;}
+
+.dashboard__toolbar{display:flex; gap:12px; margin-bottom:18px; flex-wrap:wrap;}
+.dashboard__toolbar #search{flex:1 1 240px;}
+.dashboard__toolbar select{flex:0 0 200px;}
+
+.dashboard__stats{display:flex; gap:28px; margin-bottom:24px; flex-wrap:wrap;}
+.stat{display:flex; flex-direction:column; gap:2px;}
+.stat__value{font-family:'Teko'; font-size:32px; color:var(--accent); font-variant-numeric:tabular-nums;}
+.stat__label{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-dim);}
+
+.dashboard__list{display:flex; flex-direction:column; gap:12px;}
+.card{
+  border:1px solid var(--line); background:var(--panel); border-radius:3px; padding:16px 18px;
+  display:grid; grid-template-columns:auto 1fr auto; gap:16px; align-items:start;
+}
+@media (max-width:720px){ .card{grid-template-columns:1fr;} }
+
+.card__score{
+  width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-family:'Teko'; font-size:20px; border:2px solid var(--accent); color:var(--accent); flex:none;
+}
+.card__score.is-high{border-color:var(--ok); color:var(--ok);}
+.card__score.is-low{border-color:var(--danger); color:var(--danger);}
+
+.card__main h3{font-size:22px; margin-bottom:2px;}
+.card__meta{font-size:12px; color:var(--ink-dim); margin-bottom:8px;}
+.card__tags{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;}
+.tag{font-size:11px; letter-spacing:.03em; padding:4px 10px; border:1px solid var(--line); border-radius:999px; color:var(--ink-dim);}
+.card__detail{font-size:13px; color:var(--ink-dim); display:none; margin-top:10px; border-top:1px solid var(--line); padding-top:10px; white-space:pre-wrap;}
+.card.is-open .card__detail{display:block;}
+.card__toggle{justify-self:end; font-size:12px;}
+
+.empty{color:var(--ink-dim); text-align:center; padding:60px 0; font-size:14px;}
