@@ -31,6 +31,7 @@
 .group[open] > .group__head::before{transform:rotate(90deg);}
 .group__date{font-family:'Exo 2'; font-size:22px; color:var(--ink); letter-spacing:.02em;}
 .group__count{font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-dim);}
+.group__table-btn{margin-left:auto; padding:7px 14px; font-size:11px;}
 
 .group__list{display:flex; flex-direction:column; gap:8px; padding:0 16px 16px;}
 .row{
@@ -91,4 +92,29 @@
 .modal__detail{
   font-family:'Inter'; font-size:14px; color:var(--ink); white-space:pre-wrap; margin:0;
   border-top:1px solid var(--line); padding-top:14px; line-height:1.7;
+}
+
+/* ---------- per-date table modal ---------- */
+.modal__box--wide{max-width:min(96vw,1200px);}
+.table-modal__head{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:16px; padding-right:28px;}
+.table-modal__head h3{font-size:22px;}
+.table-modal__actions{display:flex; gap:10px;}
+.table-modal__scroll{overflow-x:auto; border-top:1px solid var(--line); padding-top:14px;}
+
+.data-table{border-collapse:collapse; width:100%; font-size:13px; white-space:nowrap;}
+.data-table th,.data-table td{padding:8px 12px; border-bottom:1px solid var(--line); text-align:left;}
+.data-table th{font-family:'Exo 2'; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-dim); white-space:nowrap;}
+.data-table td{color:var(--ink); max-width:260px; overflow:hidden; text-overflow:ellipsis;}
+.data-table tbody tr:hover{background:var(--bg-raised);}
+
+@media print{
+  .topbar, .loginbox, .dashboard__toolbar, .dashboard__stats, .dashboard__groups,
+  .modal__backdrop, .modal__close, .table-modal__actions, .noise{display:none !important;}
+  body{background:#fff; color:#000;}
+  .modal{position:static; padding:0;}
+  .modal__box{max-width:none; max-height:none; overflow:visible; border:none; padding:0; box-shadow:none; background:#fff;}
+  .table-modal__head h3{color:#000;}
+  .table-modal__scroll{overflow:visible; border-top:1px solid #000;}
+  .data-table th,.data-table td{border-bottom:1px solid #999; color:#000;}
+  .data-table th{color:#000;}
 }

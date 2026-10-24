@@ -87,7 +87,9 @@
       return (
         '<details class="group"' + (i === 0 ? " open" : "") + '>' +
           '<summary class="group__head"><span class="group__date">' + fmtDateHeading(g.key) + '</span>' +
-            '<span class="group__count">' + items.length + " анкет" + (items.length === 1 ? "а" : items.length < 5 ? "и" : "") + "</span></summary>" +
+            '<span class="group__count">' + items.length + " анкет" + (items.length === 1 ? "а" : items.length < 5 ? "и" : "") + "</span>" +
+            '<button type="button" class="btn btn--ghost group__table-btn" data-date-key="' + g.key + '">Таблиця</button>' +
+          "</summary>" +
           '<div class="group__list">' +
             items.map(rowHtml).join("") +
           "</div>" +
@@ -99,6 +101,16 @@
       btn.addEventListener("click", function () {
         var r = rows.find(function (x) { return String(x.id) === btn.dataset.id; });
         if (r) openModal(r);
+      });
+    });
+
+    Array.prototype.forEach.call(groupsEl.querySelectorAll(".group__table-btn"), function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var key = btn.dataset.dateKey;
+        var group = groups.find(function (g) { return g.key === key; });
+        if (group) openTableModal(key, group.items);
       });
     });
   }
@@ -171,7 +183,76 @@
   }
   document.getElementById("modalClose").addEventListener("click", closeModal);
   document.getElementById("modalBackdrop").addEventListener("click", closeModal);
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !modal.hidden) closeModal(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (!modal.hidden) closeModal();
+    if (!tableModal.hidden) closeTableModal();
+  });
+
+  // ---------- per-date table ----------
+  var tableModal = document.getElementById("tableModal");
+  var tableModalTitle = document.getElementById("tableModalTitle");
+  var dataTable = document.getElementById("dataTable");
+  var tableLastFocused = null;
+  var currentTableItems = [];
+  var currentTableDateLabel = "";
+
+  var TABLE_COLUMNS = [
+    { label: "№", get: function (r, i) { return i + 1; } },
+    { label: "ПІБ", get: function (r) { return r.full_name || "—"; } },
+    { label: "Рейтинг", get: function (r) { return window.buildCharacteristic(r).score; } },
+    { label: "Телефон", get: function (r) { return r.phone || "—"; } },
+    { label: "Адреса на час зборів", get: function (r) { return r.residence_type || "—"; } },
+    { label: "Область", get: function (r) { return r.region || "—"; } },
+    { label: "Статус", get: function (r) { return r.status === "military" ? "Військовослужбовець" : "Цивільний"; } },
+    { label: "Досвід БпЛА", get: function (r) { return r.uav_experience ? "так" : "ні"; } },
+    { label: "Навички Е/П/Р", get: function (r) { return [r.skill_electronics, r.skill_programming, r.skill_repair].join("/"); } },
+    { label: "Зір", get: function (r) { return labelMap(VISION, r.vision); } },
+    { label: "Стресостійкість", get: function (r) { return (r.stress_resilience || "—") + "/5"; } },
+    { label: "Мотивація", get: function (r) { return r.motivation || "—"; } },
+  ];
+
+  function renderDataTable(items) {
+    var thead = "<thead><tr>" + TABLE_COLUMNS.map(function (c) { return "<th>" + escapeHtml(c.label) + "</th>"; }).join("") + "</tr></thead>";
+    var tbody = "<tbody>" + items.map(function (r, i) {
+      return "<tr>" + TABLE_COLUMNS.map(function (c) { return "<td>" + escapeHtml(String(c.get(r, i))) + "</td>"; }).join("") + "</tr>";
+    }).join("") + "</tbody>";
+    dataTable.innerHTML = thead + tbody;
+  }
+
+  function openTableModal(dateKeyStr, items) {
+    currentTableItems = items.slice().sort(function (a, b) { return new Date(a.created_at) - new Date(b.created_at); });
+    currentTableDateLabel = fmtDateHeading(dateKeyStr);
+    tableModalTitle.textContent = "Таблиця кандидатів — " + currentTableDateLabel;
+    renderDataTable(currentTableItems);
+    tableLastFocused = document.activeElement;
+    tableModal.hidden = false;
+    document.getElementById("tableModalClose").focus();
+  }
+  function closeTableModal() {
+    tableModal.hidden = true;
+    if (tableLastFocused) tableLastFocused.focus();
+  }
+  document.getElementById("tableModalClose").addEventListener("click", closeTableModal);
+  document.getElementById("tableModalBackdrop").addEventListener("click", closeTableModal);
+  document.getElementById("tablePrintBtn").addEventListener("click", function () { window.print(); });
+  document.getElementById("tableExportBtn").addEventListener("click", function () {
+    var cols = TABLE_COLUMNS;
+    var esc = function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; };
+    var out = [cols.map(function (c) { return esc(c.label); }).join(",")];
+    currentTableItems.forEach(function (r, i) {
+      out.push(cols.map(function (c) { return esc(c.get(r, i)); }).join(","));
+    });
+    var blob = new Blob(["﻿" + out.join("\n")], { type: "text/csv;charset=utf-8;" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "candidates_" + currentTableDateLabel.replace(/\s+/g, "_") + ".csv";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
 
   async function loadRows() {
     if (!client) return;
@@ -224,6 +305,8 @@
     dashboard.hidden = true;
     logoutBtn.hidden = true;
   }
+
+
 
 
   loginForm.addEventListener("submit", async function (e) {

@@ -86,6 +86,23 @@
   </div>
 </div>
 
+<div class="modal" id="tableModal" hidden>
+  <div class="modal__backdrop" id="tableModalBackdrop"></div>
+  <div class="modal__box modal__box--wide" role="dialog" aria-modal="true" aria-labelledby="tableModalTitle">
+    <button type="button" class="modal__close" id="tableModalClose" aria-label="Закрити">×</button>
+    <div class="table-modal__head">
+      <h3 id="tableModalTitle"></h3>
+      <div class="table-modal__actions">
+        <button type="button" class="btn btn--ghost" id="tableExportBtn">Експорт CSV</button>
+        <button type="button" class="btn btn--ghost" id="tablePrintBtn">Друк</button>
+      </div>
+    </div>
+    <div class="table-modal__scroll">
+      <table class="data-table" id="dataTable"></table>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="js/config.js"></script>
 <script src="js/characteristics.js"></script>
