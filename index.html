@@ -46,7 +46,7 @@
         </p>
         <ul class="intro__facts">
           <li><span>≈ 7&nbsp;хв</span>Орієнтовний час заповнення</li>
-          <li><span>6</span>Коротких розділів</li>
+          <li><span>7</span>Коротких розділів</li>
           <li><span>1</span>Відправка без реєстрації</li>
         </ul>
         <button class="btn btn--primary btn--lg" id="startBtn" type="button">
@@ -129,6 +129,42 @@
         <span class="field__label">Військова частина / підрозділ</span>
         <input class="field__input" type="text" name="unit" maxlength="200">
       </label>
+
+      <label class="field" data-show-if="status=military">
+        <span class="field__label">Приблизний строк служби</span>
+        <input class="field__input" type="text" name="approx_service_years" id="approxServiceYears" maxlength="60" placeholder="наприклад: 7 років">
+      </label>
+      <input type="checkbox" name="service_years_gt5" id="serviceYearsGt5" hidden>
+
+
+      <div class="field-group" data-show-if="service_years_gt5=on">
+        <span class="field__label">Додаткові питання для досвідчених військовослужбовців (строк служби понад 5 років)</span>
+        <label class="field">
+          <span class="field__label">Посада / спеціальність</span>
+          <input class="field__input" type="text" name="position_specialty" maxlength="200">
+        </label>
+        <label class="field">
+          <span class="field__label">Профільні курси / підготовка</span>
+          <input class="field__input" type="text" name="profile_courses" maxlength="300">
+        </label>
+        <label class="field">
+          <span class="field__label">Досвід роботи з технікою / обладнанням</span>
+          <input class="field__input" type="text" name="equipment_experience" maxlength="300">
+        </label>
+        <label class="field field--toggle">
+          <input type="checkbox" name="trained_others" class="toggle__input">
+          <span class="toggle__box"></span>
+          <span class="field__label">Навчав(ла) / інструктував(ла) інших</span>
+        </label>
+        <label class="field" data-show-if="trained_others=on">
+          <span class="field__label">Кого і чого навчав(ла)</span>
+          <input class="field__input" type="text" name="trained_others_details" maxlength="300">
+        </label>
+        <label class="field">
+          <span class="field__label">Нагороди / відзнаки (якщо є)</span>
+          <input class="field__input" type="text" name="awards" maxlength="300">
+        </label>
+      </div>
 
       <div class="row2">
         <label class="field">
@@ -277,8 +313,41 @@
     </fieldset>
 
     <!-- STEP 6 -->
-    <fieldset class="step" data-step="6" data-title="Мотивація">
-      <legend class="step__legend"><span class="step__num">06</span>Мотивація</legend>
+    <fieldset class="step" data-step="6" data-title="Особисті якості та інтереси">
+      <legend class="step__legend"><span class="step__num">06</span>Особисті якості та інтереси</legend>
+
+      <p class="step__hint">Ці відповіді не впливають на рейтинг — вони допомагають інструктору зрозуміти, на які теми говорити з кожним курсантом особисто.</p>
+
+      <label class="field">
+        <span class="field__label">Хобі / захоплення</span>
+        <input class="field__input" type="text" name="hobbies" maxlength="300">
+      </label>
+
+      <label class="field">
+        <span class="field__label">Як найкраще сприймаєте нову інформацію?</span>
+        <select class="field__input" name="info_perception">
+          <option value="" disabled selected>Оберіть варіант</option>
+          <option value="practice">Через практику ("руками")</option>
+          <option value="theory">Через теорію / пояснення</option>
+          <option value="observation">Через спостереження за іншими</option>
+          <option value="mixed">Однаково добре по-різному</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="field__label">Риси характеру, які виділили б у собі самі</span>
+        <input class="field__input" type="text" name="character_traits" maxlength="300">
+      </label>
+
+      <label class="field">
+        <span class="field__label">Теми / інтереси поза службою, на які любите говорити</span>
+        <input class="field__input" type="text" name="talk_topics" maxlength="300">
+      </label>
+    </fieldset>
+
+    <!-- STEP 7 -->
+    <fieldset class="step" data-step="7" data-title="Мотивація">
+      <legend class="step__legend"><span class="step__num">07</span>Мотивація</legend>
 
       <label class="field">
         <span class="field__label">Чому ви хочете стати пілотом БпЛА? <i>*</i></span>
@@ -329,6 +398,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="js/config.js?v=2"></script>
-<script src="js/main.js?v=2"></script>
+<script src="js/main.js?v=3"></script>
 </body>
 </html>

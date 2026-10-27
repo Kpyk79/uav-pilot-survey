@@ -18,6 +18,7 @@
 
   function labelMap(dict, key) { return dict[key] || key || "—"; }
   var VISION = { normal: "Норма", corrected: "З корекцією", impaired: "Обмеження" };
+  var PERCEPTION = { practice: "Через практику", theory: "Через теорію", observation: "Через спостереження", mixed: "Однаково добре по-різному" };
 
   function dateKey(iso) {
     var d = new Date(iso);
@@ -140,6 +141,12 @@
       "Дата народження: " + (r.birth_date || "—"),
       "Область: " + (r.region || "—"),
       "Статус: " + (r.status === "military" ? "Військовослужбовець" + (r.unit ? " (" + r.unit + ")" : "") : "Цивільний"),
+      "Строк служби: " + (r.approx_service_years || "—"),
+      "Посада/спеціальність: " + (r.position_specialty || "—"),
+      "Профільні курси: " + (r.profile_courses || "—"),
+      "Досвід з технікою: " + (r.equipment_experience || "—"),
+      "Навчав(ла) інших: " + (r.trained_others ? (r.trained_others_details || "так") : "ні"),
+      "Нагороди: " + (r.awards || "—"),
       "Освіта: " + (r.education_level || "—") + (r.education_field ? ", " + r.education_field : ""),
       "Досвід БпЛА: " + (r.uav_experience ? "так — " + ((r.uav_types || []).join(", ") || "—") + (r.uav_hours ? " (" + r.uav_hours + ")" : "") : "ні"),
       "RC-досвід: " + (r.rc_experience ? r.rc_details || "так" : "ні"),
@@ -148,9 +155,16 @@
       "Водійські категорії: " + ((r.driver_license || []).join(", ") || "—"),
       "Зір: " + labelMap(VISION, r.vision) + (r.health_limitations ? " — " + r.health_limitations : ""),
       "Стресостійкість: " + (r.stress_resilience || "—") + "/5",
+      "Хобі/захоплення: " + (r.hobbies || "—"),
+      "Сприйняття інформації: " + labelMap(PERCEPTION, r.info_perception),
+      "Риси характеру: " + (r.character_traits || "—"),
+      "Теми для розмови: " + (r.talk_topics || "—"),
       "Мотивація: " + (r.motivation || "—"),
       "Контактна особа: " + (r.contact_person || "—"),
       "Додатково: " + (r.additional_info || "—"),
+      "",
+      "— Підсумок для інструктора —",
+      window.buildSummary(r),
     ];
     return lines.map(escapeHtml).join("\n");
   }

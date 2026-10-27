@@ -18,6 +18,13 @@ create table if not exists public.candidates (
   -- Блок 2. Служба / освіта
   status text,                             -- 'civilian' | 'military'
   unit text,
+  approx_service_years text,               -- вільний текст, напр. "7 років"
+  position_specialty text,                 -- якщо строк служби > 5 років
+  profile_courses text,
+  equipment_experience text,
+  trained_others boolean default false,
+  trained_others_details text,
+  awards text,
   education_level text,
   education_field text,
 
@@ -41,7 +48,13 @@ create table if not exists public.candidates (
   health_limitations text,
   stress_resilience int,                    -- 1-5
 
-  -- Блок 6. Мотивація
+  -- Блок 6. Особисті якості та інтереси
+  hobbies text,
+  info_perception text,                     -- 'practice' | 'theory' | 'observation' | 'mixed'
+  character_traits text,
+  talk_topics text,
+
+  -- Блок 7. Мотивація
   motivation text,
   contact_person text,
   additional_info text,
@@ -66,6 +79,15 @@ drop policy if exists "authenticated can read" on public.candidates;
 create policy "authenticated can read"
   on public.candidates
   for select
+  to authenticated
+  using (true);
+
+-- Видаляти анкети може лише автентифікований користувач (кнопка видалення
+-- на сторінці штабу / в застосунку Ocinka).
+drop policy if exists "authenticated can delete" on public.candidates;
+create policy "authenticated can delete"
+  on public.candidates
+  for delete
   to authenticated
   using (true);
 

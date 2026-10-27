@@ -89,6 +89,21 @@
   }
   form.addEventListener("change", applyConditionalFields);
 
+  // ---------- "строк служби > 5 років" похідний прапорець ----------
+  var approxServiceYears = document.getElementById("approxServiceYears");
+  var serviceYearsGt5 = document.getElementById("serviceYearsGt5");
+  if (approxServiceYears && serviceYearsGt5) {
+    approxServiceYears.addEventListener("input", function () {
+      var match = approxServiceYears.value.match(/\d+/);
+      var years = match ? parseInt(match[0], 10) : 0;
+      var gt5 = years > 5;
+      if (serviceYearsGt5.checked !== gt5) {
+        serviceYearsGt5.checked = gt5;
+        applyConditionalFields();
+      }
+    });
+  }
+
   // ---------- skill scales (0-3 / 1-5 dot picker) ----------
   form.querySelectorAll(".skill").forEach(function (group) {
     var hidden = group.querySelector('input[type="hidden"]');
@@ -139,6 +154,13 @@
 
       status: fd.get("status") || null,
       unit: fd.get("unit") || null,
+      approx_service_years: fd.get("approx_service_years") || null,
+      position_specialty: fd.get("position_specialty") || null,
+      profile_courses: fd.get("profile_courses") || null,
+      equipment_experience: fd.get("equipment_experience") || null,
+      trained_others: fd.get("trained_others") === "on",
+      trained_others_details: fd.get("trained_others_details") || null,
+      awards: fd.get("awards") || null,
       education_level: fd.get("education_level") || null,
       education_field: fd.get("education_field") || null,
 
@@ -158,6 +180,11 @@
       vision: fd.get("vision") || null,
       health_limitations: fd.get("health_limitations") || null,
       stress_resilience: Number(fd.get("stress_resilience") || 0),
+
+      hobbies: fd.get("hobbies") || null,
+      info_perception: fd.get("info_perception") || null,
+      character_traits: fd.get("character_traits") || null,
+      talk_topics: fd.get("talk_topics") || null,
 
       motivation: fd.get("motivation") || null,
       contact_person: fd.get("contact_person") || null,
