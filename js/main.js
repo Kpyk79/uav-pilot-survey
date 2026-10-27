@@ -127,7 +127,12 @@
   var supabaseClient = null;
   try {
     if (window.supabase && window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url && !window.SUPABASE_CONFIG.url.includes("YOUR-PROJECT")) {
-      supabaseClient = window.supabase.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
+      // Анкета завжди працює як анонімний кандидат: не підхоплюємо сесію штабу,
+      // яку supabase-js зберігає в localStorage цього ж домену (інакше запит іде
+      // з роллю authenticated і отримує 403).
+      supabaseClient = window.supabase.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey, {
+        auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: "sb-survey-anon" }
+      });
     }
   } catch (e) { console.error("Supabase init failed", e); }
 

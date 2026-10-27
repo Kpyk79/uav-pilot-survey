@@ -64,12 +64,14 @@ create table if not exists public.candidates (
 
 alter table public.candidates enable row level security;
 
--- Будь-хто (анонімний відвідувач сайту) може ТІЛЬКИ додавати анкету.
+-- Будь-хто може ТІЛЬКИ додавати анкету. authenticated теж дозволено:
+-- якщо в браузері є сесія штабу (той самий домен), запит з анкети піде
+-- з цією роллю — і без неї отримав би 403.
 drop policy if exists "anon can insert" on public.candidates;
 create policy "anon can insert"
   on public.candidates
   for insert
-  to anon
+  to anon, authenticated
   with check (consent = true);
 
 -- Читати список анкет може лише автентифікований користувач
