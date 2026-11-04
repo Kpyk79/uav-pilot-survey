@@ -4,88 +4,114 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="robots" content="noindex, nofollow, noarchive">
-<title>Штаб — результати відбору</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=2">
-<link rel="stylesheet" href="css/panel.css?v=3">
+<meta name="theme-color" content="#3f5e2b" />
+<title>Штаб відбору</title>
+<link rel="stylesheet" href="css/survey.css?v=6">
+<link rel="stylesheet" href="css/panel.css?v=5">
 </head>
-<body>
-<div class="noise"></div>
+<body class="panel-page">
 
-<header class="topbar">
-  <div class="topbar__inner">
+<header class="phead">
+  <div class="phead__in">
     <div class="brand">
-      <svg class="brand__mark" viewBox="0 0 48 48" aria-hidden="true">
-        <polygon points="24,3 45,24 24,45 3,24" fill="none" stroke="currentColor" stroke-width="2"/>
-        <path d="M24 12 L24 36 M12 24 L36 24" stroke="currentColor" stroke-width="2"/>
-        <circle cx="24" cy="24" r="5" fill="currentColor"/>
-      </svg>
-      <div class="brand__text">
-        <span class="brand__title">ШТАБ ВІДБОРУ</span>
-        <span class="brand__subtitle">список кандидатів</span>
-      </div>
+      <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 5.2L20 8l-4 4 1 5.6L12 15l-5 2.6 1-5.6-4-4 5.6-.8z"/></svg></span>
+      <span>Штаб відбору<small>кандидати в пілоти БпЛА</small></span>
     </div>
-    <button class="btn btn--ghost" id="logoutBtn" hidden>Вийти</button>
+    <nav class="tabs" id="tabs" role="tablist" aria-label="Розділи" hidden>
+      <button class="tab is-on" role="tab" type="button" data-tab="list" aria-selected="true">Кандидати</button>
+      <button class="tab" role="tab" type="button" data-tab="stats" aria-selected="false">Аналітика</button>
+    </nav>
+    <button class="btn ghost small" id="logoutBtn" type="button" hidden>Вийти</button>
   </div>
 </header>
 
-<main class="screen screen--panel">
+<main class="pmain">
 
-  <!-- LOGIN -->
-  <section class="loginbox" id="loginBox">
-    <h1>Вхід для особового складу</h1>
-    <p class="loginbox__hint">Доступ лише для авторизованих облікових записів Supabase Auth.</p>
-    <form id="loginForm">
-      <label class="field">
-        <span class="field__label">Email</span>
-        <input class="field__input" type="email" name="email" required autocomplete="username">
-      </label>
-      <label class="field">
-        <span class="field__label">Пароль</span>
-        <input class="field__input" type="password" name="password" required autocomplete="current-password">
-      </label>
-      <button class="btn btn--primary btn--lg" type="submit">Увійти</button>
-      <p class="loginbox__error" id="loginError" hidden></p>
+  <!-- ВХІД -->
+  <section class="loginbox card" id="loginBox">
+    <h1 class="q">Вхід для штабу</h1>
+    <p class="hint">Доступ лише для облікових записів, створених у Supabase Auth.</p>
+    <form id="loginForm" class="lform">
+      <label class="fld"><span class="fld__l">Email</span>
+        <input class="inp" type="email" name="email" required autocomplete="username"></label>
+      <label class="fld"><span class="fld__l">Пароль</span>
+        <input class="inp" type="password" name="password" required autocomplete="current-password"></label>
+      <button class="btn pri big" type="submit">Увійти</button>
+      <p class="msg" id="loginError" hidden></p>
     </form>
   </section>
 
-  <!-- DASHBOARD -->
-  <section class="dashboard" id="dashboard" hidden>
-    <div class="dashboard__toolbar">
-      <input class="field__input" id="search" type="search" placeholder="Пошук за ПІБ, областю, телефоном…">
-      <select class="field__input" id="sortBy">
-        <option value="created_at_desc">Нові спочатку</option>
-        <option value="created_at_asc">Старі спочатку</option>
-        <option value="score_desc">Рейтинг (вищий спочатку)</option>
-        <option value="name_asc">За прізвищем (А→Я)</option>
-      </select>
-      <button class="btn btn--ghost" id="exportBtn">Експорт CSV</button>
-      <button class="btn btn--ghost" id="refreshBtn">Оновити</button>
+  <!-- ПАНЕЛЬ -->
+  <section id="dashboard" hidden>
+    <div class="filters" id="filters">
+      <label class="filter"><span>Період</span>
+        <select class="inp sel" id="period">
+          <option value="all">За весь час</option>
+          <option value="today">Сьогодні</option>
+          <option value="7">Останні 7 днів</option>
+          <option value="30">Останні 30 днів</option>
+        </select>
+      </label>
+      <div class="filter filter--grow" data-for="list">
+        <span>Пошук</span>
+        <input class="inp" id="search" type="search" placeholder="ПІБ, область, телефон…">
+      </div>
+      <label class="filter" data-for="list"><span>Сортування</span>
+        <select class="inp sel" id="sortBy">
+          <option value="created_at_desc">Нові спочатку</option>
+          <option value="created_at_asc">Старі спочатку</option>
+          <option value="score_desc">Рейтинг: вищий спочатку</option>
+          <option value="name_asc">За прізвищем (А→Я)</option>
+        </select>
+      </label>
+      <label class="filter" data-for="list"><span>Показати</span>
+        <select class="inp sel" id="onlyFilter">
+          <option value="all">Усіх</option>
+          <option value="high">Високий потенціал</option>
+          <option value="uav">З досвідом БпЛА</option>
+          <option value="military">Військових</option>
+          <option value="civilian">Цивільних</option>
+        </select>
+      </label>
+      <div class="filter filter--btns">
+        <button class="btn small" id="exportBtn" type="button">Експорт CSV</button>
+        <button class="btn small" id="refreshBtn" type="button">Оновити</button>
+      </div>
     </div>
-    <div class="dashboard__stats" id="stats"></div>
-    <div class="dashboard__groups" id="groups"></div>
+
+    <!-- Кандидати -->
+    <div id="viewList">
+      <div class="stats" id="stats"></div>
+      <div class="groups" id="groups"></div>
+    </div>
+
+    <!-- Аналітика -->
+    <div id="viewStats" hidden>
+      <div class="kpis" id="kpis"></div>
+      <div class="cards" id="charts"></div>
+    </div>
   </section>
 
 </main>
+
+<div id="tip" class="tip" role="tooltip" hidden></div>
 
 <div class="modal" id="modal" hidden>
   <div class="modal__backdrop" id="modalBackdrop"></div>
   <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="modalName">
     <button type="button" class="modal__close" id="modalClose" aria-label="Закрити">×</button>
     <div class="modal__head">
-      <div class="modal__score" id="modalScore"></div>
+      <div class="ring" id="modalScore"></div>
       <div>
         <h3 id="modalName"></h3>
         <div class="modal__meta" id="modalMeta"></div>
       </div>
     </div>
     <div class="modal__tags" id="modalTags"></div>
-    <pre class="modal__detail" id="modalDetail"></pre>
+    <div class="modal__detail" id="modalDetail"></div>
     <div class="modal__actions">
-      <button type="button" class="btn btn--primary" id="modalDocx">Завантажити досьє (.docx)</button>
-      <button type="button" class="btn btn--danger" id="modalDelete">Видалити анкету</button>
+      <button type="button" class="btn pri" id="modalDocx">Завантажити досьє (.docx)</button>
+      <button type="button" class="btn danger" id="modalDelete">Видалити анкету</button>
     </div>
   </div>
 </div>
@@ -94,25 +120,26 @@
   <div class="modal__backdrop" id="tableModalBackdrop"></div>
   <div class="modal__box modal__box--wide" role="dialog" aria-modal="true" aria-labelledby="tableModalTitle">
     <button type="button" class="modal__close" id="tableModalClose" aria-label="Закрити">×</button>
-    <div class="table-modal__head">
+    <div class="tmodal__head">
       <h3 id="tableModalTitle"></h3>
-      <div class="table-modal__actions">
-        <button type="button" class="btn btn--ghost" id="tableExportBtn">Експорт CSV</button>
-        <button type="button" class="btn btn--ghost" id="tableDocxBtn">Досьє (.docx)</button>
-        <button type="button" class="btn btn--ghost" id="tablePrintBtn">Друк</button>
+      <div class="tmodal__actions">
+        <button type="button" class="btn small" id="tableExportBtn">Експорт CSV</button>
+        <button type="button" class="btn small" id="tableDocxBtn">Досьє (.docx)</button>
+        <button type="button" class="btn small" id="tablePrintBtn">Друк</button>
       </div>
     </div>
-    <div class="table-modal__scroll">
+    <div class="tmodal__scroll">
       <table class="data-table" id="dataTable"></table>
     </div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script src="js/config.js?v=2"></script>
 <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+<script src="js/config.js?v=2"></script>
 <script src="js/characteristics.js?v=3"></script>
 <script src="js/dossier.js?v=2"></script>
-<script src="js/panel.js?v=4"></script>
+<script src="js/charts.js?v=1"></script>
+<script src="js/panel.js?v=5"></script>
 </body>
 </html>
