@@ -89,7 +89,11 @@
         '<details class="group"' + (i === 0 ? " open" : "") + '>' +
           '<summary class="group__head"><span class="group__date">' + fmtDateHeading(g.key) + '</span>' +
             '<span class="group__count">' + items.length + " анкет" + (items.length === 1 ? "а" : items.length < 5 ? "и" : "") + "</span>" +
-            '<button type="button" class="btn btn--ghost group__table-btn" data-date-key="' + g.key + '">Таблиця</button>' +
+            '<span class="group__actions">' +
+              '<button type="button" class="btn btn--ghost group__table-btn" data-date-key="' + g.key + '">Таблиця</button>' +
+              '<button type="button" class="btn btn--ghost group__docx-btn" data-date-key="' + g.key + '">Досьє .docx</button>' +
+              '<button type="button" class="btn btn--danger group__del-btn" data-date-key="' + g.key + '">Видалити день</button>' +
+            '</span>' +
           "</summary>" +
           '<div class="group__list">' +
             items.map(rowHtml).join("") +
@@ -103,6 +107,23 @@
         var r = rows.find(function (x) { return String(x.id) === btn.dataset.id; });
         if (r) openModal(r);
       });
+    });
+
+    function bindGroupButton(selector, handler) {
+      Array.prototype.forEach.call(groupsEl.querySelectorAll(selector), function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var group = groups.find(function (g) { return g.key === btn.dataset.dateKey; });
+          if (group) handler(group, btn);
+        });
+      });
+    }
+    bindGroupButton(".group__docx-btn", function (g, btn) { exportDossiers(g.items, fmtDateHeading(g.key), "dosye_" + g.key, btn); });
+    bindGroupButton(".group__del-btn", function (g) {
+      var n = g.items.length;
+      if (!confirm("Видалити ВСІ анкети за " + fmtDateHeading(g.key) + " (" + n + " шт.)?\n\nДію неможливо скасувати. Спершу варто завантажити досьє або CSV.")) return;
+      deleteRows(g.items.map(function (r) { return r.id; }));
     });
 
     Array.prototype.forEach.call(groupsEl.querySelectorAll(".group__table-btn"), function (btn) {
@@ -178,7 +199,9 @@
   var modalDetail = document.getElementById("modalDetail");
   var lastFocused = null;
 
+  var modalRow = null;
   function openModal(r) {
+    modalRow = r;
     var ch = window.buildCharacteristic(r);
     var scoreClass = ch.score >= 70 ? "is-high" : ch.score < 40 ? "is-low" : "";
     modalScore.textContent = ch.score;
@@ -195,6 +218,14 @@
     modal.hidden = true;
     if (lastFocused) lastFocused.focus();
   }
+  document.getElementById("modalDocx").addEventListener("click", function (e) {
+    if (modalRow) exportDossiers([modalRow], null, "dosye_" + window.Dossier.safeName(modalRow.full_name) + "_" + dateKey(modalRow.created_at), e.currentTarget);
+  });
+  document.getElementById("modalDelete").addEventListener("click", async function () {
+    if (!modalRow) return;
+    if (!confirm("Видалити анкету «" + (modalRow.full_name || "Без імені") + "»?\n\nДію неможливо скасувати.")) return;
+    if (await deleteRows([modalRow.id])) closeModal();
+  });
   document.getElementById("modalClose").addEventListener("click", closeModal);
   document.getElementById("modalBackdrop").addEventListener("click", closeModal);
   document.addEventListener("keydown", function (e) {
@@ -250,6 +281,9 @@
   document.getElementById("tableModalClose").addEventListener("click", closeTableModal);
   document.getElementById("tableModalBackdrop").addEventListener("click", closeTableModal);
   document.getElementById("tablePrintBtn").addEventListener("click", function () { window.print(); });
+  document.getElementById("tableDocxBtn").addEventListener("click", function (e) {
+    exportDossiers(currentTableItems, currentTableDateLabel, "dosye_" + currentTableDateLabel.replace(/\s+/g, "_"), e.currentTarget);
+  });
   document.getElementById("tableExportBtn").addEventListener("click", function () {
     var cols = TABLE_COLUMNS;
     var esc = function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; };
@@ -267,6 +301,61 @@
     a.remove();
     URL.revokeObjectURL(url);
   });
+
+  // ---------- повідомлення, завантаження файлів ----------
+  function toast(msg) {
+    var t = document.createElement("div");
+    t.className = "toast";
+    t.setAttribute("role", "status");
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(function () { t.remove(); }, 6000);
+  }
+  function downloadBlob(blob, name) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 30000);
+  }
+
+  // Досьє в .docx: одна анкета або всі анкети дня (зі зведенням на першій сторінці)
+  async function exportDossiers(items, title, fileBase, btn) {
+    if (!items || !items.length) return;
+    if (!window.docx || !window.Dossier) { toast("Не вдалося завантажити модуль експорту. Перевірте з'єднання й оновіть сторінку."); return; }
+    var label = btn ? btn.textContent : "";
+    if (btn) { btn.disabled = true; btn.textContent = "Готуємо…"; }
+    try {
+      var sorted = items.slice().sort(function (a, b) { return new Date(a.created_at) - new Date(b.created_at); });
+      var blob = await window.Dossier.toBlob(sorted, title ? { title: title } : {});
+      downloadBlob(blob, fileBase + ".docx");
+    } catch (err) {
+      console.error(err);
+      toast("Не вдалося сформувати файл .docx.");
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = label; }
+    }
+  }
+
+  // Видалення: у відповіді повертаємо видалені рядки, щоб помітити заборону політикою RLS (вона мовчки видаляє 0 рядків)
+  async function deleteRows(ids) {
+    if (!client || !ids.length) return false;
+    var res = await client.from("candidates").delete().in("id", ids).select("id");
+    if (res.error) { console.error(res.error); toast("Не вдалося видалити: " + res.error.message); return false; }
+    var removed = (res.data || []).map(function (x) { return String(x.id); });
+    rows = rows.filter(function (r) { return removed.indexOf(String(r.id)) < 0; });
+    render();
+    if (!removed.length) {
+      toast("База не дозволила видалення. Виконайте supabase/delete-policy.sql у Supabase (SQL Editor).");
+      return false;
+    }
+    if (removed.length < ids.length) toast("Видалено " + removed.length + " з " + ids.length + " анкет. Перевірте дозволи в Supabase.");
+    else toast(removed.length === 1 ? "Анкету видалено" : "Видалено анкет: " + removed.length);
+    return true;
+  }
 
   async function loadRows() {
     if (!client) return;

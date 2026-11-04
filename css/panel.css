@@ -31,7 +31,13 @@
 .group[open] > .group__head::before{transform:rotate(90deg);}
 .group__date{font-family:'Exo 2'; font-size:22px; color:var(--ink); letter-spacing:.02em;}
 .group__count{font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-dim);}
-.group__table-btn{margin-left:auto; padding:7px 14px; font-size:11px;}
+.group__head{flex-wrap:wrap;}
+.group__actions{margin-left:auto; display:flex; gap:8px; flex-wrap:wrap;}
+.group__actions .btn{padding:7px 14px; font-size:11px;}
+.btn--danger{background:transparent; color:#e08a80; border:1px solid #7a3a33;}
+.btn--danger:hover{background:rgba(181,74,63,.15); color:#f0a39a;}
+.modal__actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; padding-top:16px; border-top:1px solid var(--line);}
+.modal__actions .btn{padding:10px 18px; font-size:13px;}
 
 .group__list{display:flex; flex-direction:column; gap:8px; padding:0 16px 16px;}
 .row{
