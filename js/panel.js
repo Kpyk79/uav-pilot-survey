@@ -23,7 +23,11 @@
   function labelMap(dict, key) { return dict[key] || key || "—"; }
 
   // ---------- дати й рядки ----------
-  function dateKey(iso) { return new Date(iso).toISOString().slice(0, 10); } // групування за днем подання
+  // День подання за місцевим часом (як і в застосунку Ocinka), а не за UTC
+  function dateKey(iso) {
+    var d = new Date(iso), p = function (n) { return String(n).padStart(2, "0"); };
+    return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+  }
   function fmtDateHeading(key) {
     return new Date(key + "T00:00:00").toLocaleDateString("uk-UA", { day: "2-digit", month: "long", year: "numeric" });
   }
@@ -167,7 +171,7 @@
         ringHtml(ch.score) +
         '<span class="row__main"><span class="row__name">' + escapeHtml(r.full_name || "Без імені") + "</span>" +
           '<span class="row__tags">' + ch.tags.slice(0, 3).map(function (t) { return '<span class="tag">' + escapeHtml(t) + "</span>"; }).join("") + "</span></span>" +
-        '<span class="row__time">' + escapeHtml(meta) + "<br>" + fmtTime(r.created_at) + "</span>" +
+        '<span class="row__time">' + escapeHtml(meta) + '<i class="nl"></i>' + fmtTime(r.created_at) + "</span>" +
       "</button>"
     );
   }

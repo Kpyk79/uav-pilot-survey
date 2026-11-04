@@ -57,6 +57,7 @@ body.panel-page{background:var(--bg)}
 .row__name{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .row__tags{display:flex;flex-wrap:wrap;gap:6px}
 .row__time{font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.row__time .nl::before{content:"\A";white-space:pre}
 .tag{font-size:.76rem;background:var(--surface2);border:1px solid var(--line);border-radius:99px;padding:2px 10px;color:var(--muted);white-space:nowrap}
 .empty{text-align:center;color:var(--muted);padding:40px 10px}
 
@@ -175,6 +176,25 @@ body.panel-page{background:var(--bg)}
 .data-table th{position:sticky;top:0;background:var(--pri);color:var(--on-pri);text-align:left;padding:10px 12px;white-space:nowrap;font-weight:700}
 .data-table td{padding:9px 12px;border-top:1px solid var(--line);vertical-align:top}
 .data-table tr:nth-child(even) td{background:var(--surface2)}
+
+/* вузькі екрани: нічого не виходить за межі картки */
+html,body.panel-page{overflow-x:hidden}
+.row__name{white-space:normal;overflow-wrap:anywhere}
+.chart{overflow:hidden}
+.leg span{min-width:0;overflow-wrap:anywhere}
+.leg small{min-width:2.6em}
+@media (max-width:620px){
+  .row{grid-template-columns:52px 1fr;align-items:start}
+  .row .ring{margin-top:2px}
+  .row__time{grid-column:2;margin-top:-2px}
+  .row__time .nl::before{content:" · ";white-space:normal}
+  .donut{gap:14px}
+  .donut__wrap,.donut svg{width:128px;height:128px}
+  .leg{min-width:0;flex:1 1 130px}
+  .leg div{gap:8px}
+  .group__head{padding:14px}
+  .filter--btns{margin-left:0}
+}
 
 @media print{
   .phead,.pmain,.tip,#modal,.modal__backdrop,.modal__close,.tmodal__actions,.toast{display:none!important}
